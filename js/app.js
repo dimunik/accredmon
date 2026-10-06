@@ -6,6 +6,11 @@
   var STORAGE = "accredMon.v1";
   var BACKUP_FORMAT = "accredMon.backup";
   var BACKUP_VERSION = 1;
+  var AP4_HIGHER_ED_NOTE =
+    "В соответствии с письмом Рособрнадзора от 02.10.2026 № 04-255 при расчете показателя АП4 по образовательным программам высшего " +
+    "образования не учитываются обучающиеся, ушедшие в академический отпуск, а также обучающиеся, с которыми расторгнут договор о целевом обучении по " +
+    "инициативе федерального государственного органа, органа государственной власти субъекта Российской Федерации, органа местного самоуправления, " +
+    "юридического лица или индивидуального предпринимателя. Расчет необходимо осуществлять по аналогии с АП3";
 
   var state = {
     programId: "bak",
@@ -731,10 +736,12 @@
         "<td></td>" +
         "</tr>";
     });
-    var sourceNote = "";
+    var rowNote = "";
     if (on && ((ind.id === "AP1" && !p.spo) || (ind.id === "AP4" && p.spo))) {
-      sourceNote =
+      rowNote =
         '<div class="row-note">Значение показателя вносится Рособрнадзором самостоятельно</div>';
+    } else if (on && ind.id === "AP4" && !p.spo) {
+      rowNote = '<div class="row-note">' + escapeHtml(AP4_HIGHER_ED_NOTE) + "</div>";
     }
     var indicatorNote = ind.note && on
       ? '<p class="hint">' + escapeHtml(ind.note) + "</p>"
@@ -771,7 +778,7 @@
       "</td>" +
       "<td>" +
       escapeHtml(title.b) +
-      sourceNote +
+      rowNote +
       (on
         ? ""
         : '<div class="ind-off-note">' + escapeHtml(indicatorOffNote(p, ind)) + "</div>") +
